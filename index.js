@@ -7,7 +7,7 @@ const server = express()
 const port = 3000
 
 server.use(express.json())
-server.use("/", welcomeRouter)
+server.use("/api/", welcomeRouter)
 server.use("/api/posts", postsRouter)
 
 

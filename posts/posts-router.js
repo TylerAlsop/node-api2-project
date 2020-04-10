@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 
-//This handles the route "GET /users"
+//This handles the route "GET /api/posts"
 
 //////////////// GET ////////////////
 
@@ -18,46 +18,46 @@ router.get("/", (req, res) => {
     //     limit: req.query.limit,
     // }
 
-	users.find(/*options*/ req.query)
-		.then((users) => {
-			res.status(200).json(users)
+	posts.find(/*options*/ req.query)
+		.then((posts) => {
+			res.status(200).json(posts)
 		})
 		.catch((error) => {
 			console.log(error)
 			res.status(500).json({
-				message: "Error retrieving the users",
+				message: "Error retrieving the posts",
 			})
 		})
 })
 
 router.get("/", (req, res) => {
-	users.find()
-		.then((users) => {
-			res.status(200).json(users)
+	posts.find()
+		.then((posts) => {
+			res.status(200).json(posts)
 		})
 		.catch((error) => {
 			console.log(error)
 			res.status(500).json({
-				message: "Error retrieving the users",
+				message: "Error retrieving the posts",
 			})
 		})
 })
 
 router.get("/:id", (req, res) => {
-	users.findById(req.params.id)
-		.then((user) => {
-			if (user) {
-				res.status(200).json(user)
+	posts.findById(req.params.id)
+		.then((post) => {
+			if (post) {
+				res.status(200).json(post)
 			} else {
 				res.status(404).json({
-					message: "User not found",
+					message: "post not found",
 				})
 			}
 		})
 		.catch((error) => {
 			console.log(error)
 			res.status(500).json({
-				message: "Error retrieving the user",
+				message: "Error retrieving the post",
 			})
 		})
 })
@@ -67,18 +67,18 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
 	if (!req.body.name || !req.body.email) {
 		return res.status(400).json({
-			message: "Missing user name or email",
+			message: "Missing post name or email",
 		})
 	}
 
-	users.add(req.body)
-		.then((user) => {
-			res.status(201).json(user)
+	posts.add(req.body)
+		.then((post) => {
+			res.status(201).json(post)
 		})
 		.catch((error) => {
 			console.log(error)
 			res.status(500).json({
-				message: "Error adding the user",
+				message: "Error adding the post",
 			})
 		})
 })
@@ -89,24 +89,24 @@ router.post("/", (req, res) => {
 router.put("/:id", (req, res) => {
 	if (!req.body.name || !req.body.email) {
 		return res.status(400).json({
-			message: "Missing user name or email",
+			message: "Missing post name or email",
 		})
 	}
 
-	users.update(req.params.id, req.body)
-		.then((user) => {
-			if (user) {
-				res.status(200).json(user)
+	posts.update(req.params.id, req.body)
+		.then((post) => {
+			if (post) {
+				res.status(200).json(post)
 			} else {
 				res.status(404).json({
-					message: "The user could not be found",
+					message: "The post could not be found",
 				})
 			}
 		})
 		.catch((error) => {
 			console.log(error)
 			res.status(500).json({
-				message: "Error updating the user",
+				message: "Error updating the post",
 			})
 		})
 })
@@ -114,32 +114,32 @@ router.put("/:id", (req, res) => {
 //////////////// DELETE ////////////////
 
 router.delete("/:id", (req, res) => {
-	users.remove(req.params.id)
+	posts.remove(req.params.id)
 		.then((count) => {
 			if (count > 0) {
 				res.status(200).json({
-					message: "The user has been nuked",
+					message: "The post has been nuked",
 				})
 			} else {
 				res.status(404).json({
-					message: "The user could not be found",
+					message: "The post could not be found",
 				})
 			}
 		})
 		.catch((error) => {
 			console.log(error)
 			res.status(500).json({
-				message: "Error removing the user",
+				message: "Error removing the post",
 			})
 		})
 })
 
-//////////////// User/posts ////////////////
+//////////////// post/comments ////////////////
 //////////////// GET ////////////////
 
 
 router.get("/:id/posts", (req, res) => {
-    users.findUserPosts(req.params.id)
+    posts.findUserPosts(req.params.id)
         .then((posts) => {
             res
                 .status(200)
@@ -156,7 +156,7 @@ router.get("/:id/posts", (req, res) => {
 })
 
 router.get("/:id/posts/:postId", (req, res) => {
-    users.findUserPostById(req.params.id, req.params.postId)
+    posts.findUserPostById(req.params.id, req.params.postId)
         .then((post) => {
             if (post) {
                 res.json(post)
@@ -193,7 +193,7 @@ router.post("/:id/posts", (req, res) => {
             })
     }
 
-    users.addUserPost(req.params.id, req.body)
+    posts.addUserPost(req.params.id, req.body)
 
     .then(post => {
         return res.status(201).json(post)
