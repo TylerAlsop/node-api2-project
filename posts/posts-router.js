@@ -50,7 +50,7 @@ router.get("/:id", (req, res) => {
 				res.status(200).json(post)
 			} else {
 				res.status(404).json({
-					message: "post not found",
+					message: "Post not found",
 				})
 			}
 		})
@@ -65,20 +65,20 @@ router.get("/:id", (req, res) => {
 //////////////// POST ////////////////
 
 router.post("/", (req, res) => {
-	if (!req.body.name || !req.body.email) {
+	if (!req.body.title || !req.body.contents) {
 		return res.status(400).json({
-			message: "Missing post name or email",
+			message: "Missing post title or contents.",
 		})
 	}
 
-	posts.add(req.body)
+	posts.insert(req.body)
 		.then((post) => {
 			res.status(201).json(post)
 		})
 		.catch((error) => {
 			console.log(error)
 			res.status(500).json({
-				message: "Error adding the post",
+				message: "Error adding the post.",
 			})
 		})
 })
