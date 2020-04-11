@@ -1,4 +1,6 @@
 const express = require("express");
+const posts = require("../../data/db")
+
 const comments = require("../../data/db")
 
 
@@ -11,7 +13,7 @@ module.exports = router;
 //////////////// GET ////////////////
 
 router.get("/", (req, res) => {
-    comments.findPostComments(req.params.id)
+    posts.findPostComments(req.params.id)
         .then((comments) => {
             res
                 .status(200)
@@ -28,7 +30,7 @@ router.get("/", (req, res) => {
 })
 
 router.get("/:commentId", (req, res) => {
-    comments.findCommentById(req.params.id, req.params.postId)
+    posts.findCommentById(req.params.id, req.params.postId)
         .then((comment) => {
             if (comment) {
                 res.json(comment)
@@ -61,24 +63,24 @@ router.post("/", (req, res) => {
         return res
             .status(400)
             .json({
-                message: "Text is required to create a post."
+                message: "Text is required to comment on a post."
             })
     }
 
-    comments.addUserPost(req.params.id, req.body)
+    posts.insertComment(req.params.id, req.body)
 
-    .then(post => {
-        return res.status(201).json(post)
-    })
+        .then(comment => {
+            return res.status(201).json(comment)
+        })
 
-    .catch(error => {
-        console.log(error)
-        res
-            .status(500)
-            .json({
-                errorMessage: "There was an error while saving the post to the database."
-            })
-    })
+        .catch(error => {
+            console.log(error)
+            res
+                .status(500)
+                .json({
+                    errorMessage: "There was an error while saving the comment to the database."
+                })
+        })
 
 });
 
