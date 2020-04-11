@@ -87,9 +87,9 @@ router.post("/", (req, res) => {
 //////////////// PUT / PATCH ////////////////
 
 router.put("/:id", (req, res) => {
-	if (!req.body.name || !req.body.email) {
+	if (!req.body.title || !req.body.contents) {
 		return res.status(400).json({
-			message: "Missing post name or email",
+			message: "Missing post title or contents.",
 		})
 	}
 
@@ -99,14 +99,14 @@ router.put("/:id", (req, res) => {
 				res.status(200).json(post)
 			} else {
 				res.status(404).json({
-					message: "The post could not be found",
+					message: "The post could not be found.",
 				})
 			}
 		})
 		.catch((error) => {
 			console.log(error)
 			res.status(500).json({
-				message: "Error updating the post",
+				message: "Error updating the post.",
 			})
 		})
 })
