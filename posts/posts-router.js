@@ -202,12 +202,20 @@ router.post("/:id/comments", (req, res) => {
             .json({
                 message: "Text is required to comment on a post."
             })
+    } else if (!req.params.post_id) {
+        return res
+            .status(404)
+            .json({
+                message: "The post with the specified ID does not exist."
+            })
     }
 
     posts.insertComment(comment)
 
 
+
         .then(comment => {
+
             return res.status(201).json(comment)
         })
 
