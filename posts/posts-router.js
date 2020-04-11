@@ -16,12 +16,8 @@ module.exports = router;
 router.get("/", (req, res) => {
     console.log(req.query)
 
-    // const options = {
-    //     sortBy: req.query.sortBy,
-    //     limit: req.query.limit,
-    // }
 
-	posts.find(/*options*/ req.query)
+	posts.find(req.query)
 		.then((posts) => {
 			res.status(200).json(posts)
 		})
@@ -68,6 +64,7 @@ router.get("/:id", (req, res) => {
 //////////////// POST ////////////////
 
 router.post("/", (req, res) => {
+    
 	if (!req.body.title || !req.body.contents) {
 		return res.status(400).json({
 			errorMessage: "Please provide title and contents for the post.",
@@ -87,7 +84,7 @@ router.post("/", (req, res) => {
 })
 
 
-//////////////// PUT / PATCH ////////////////
+//////////////// PUT ////////////////
 
 router.put("/:id", (req, res) => {
 	if (!req.body.title || !req.body.contents) {
@@ -143,7 +140,7 @@ router.delete("/:id", (req, res) => {
 
 //This handles the route "/api/posts/:id/comments"
 
-//////////////// GET ////////////////
+//////////////// COMMENTS: GET ////////////////
 
 router.get("/:id/comments", (req, res) => {
     posts.findPostComments(req.params.id)
@@ -171,7 +168,7 @@ router.get("/:id/comments/:commentId", (req, res) => {
                 res
                 .status(404)
                 .json({
-                    message: "comment was not found. Make sure you have the correct comment ID"
+                    message: "The comment with that ID could not be found."
                 })
             }
 
@@ -181,17 +178,34 @@ router.get("/:id/comments/:commentId", (req, res) => {
             res
                 .status(500)
                 .json({
-                    message: "Could not get the comment with that ID."
+                    errorMessage: "Could not get the comment with that ID."
                 })
         })
 })
 
 
-//////////////// POST ////////////////
+//////////////// COMMENTS: POST ////////////////
 
 
 router.post("/:id/comments", (req, res) => {
-    comment = {
+
+    // posts.findUserPostById(req.params.id, req.params.postId)
+    //     .then((post) => {
+    //         if (post) {
+    //             res.json(post)
+    //         } else {
+    //             res
+    //             .status(404)
+    //             .json({
+    //                 message: "Post was not found. Make sure you have the correct post ID"
+    //             })
+    //         }
+
+    //     })
+
+
+
+    const comment = {
         text: req.body.text,
         post_id: req.params.id
     }
@@ -202,13 +216,28 @@ router.post("/:id/comments", (req, res) => {
             .json({
                 message: "Text is required to comment on a post."
             })
-    } else if (!req.params.post_id) {
-        return res
-            .status(404)
-            .json({
-                message: "The post with the specified ID does not exist."
-            })
     }
+
+    /*
+     ////////////// CAN'T GET THIS MVP //////////////
+
+    When the client makes a POST request to /api/posts/:id/comments:
+
+    If the post with the specified id is not found:
+
+    -return HTTP status code 404 (Not Found).
+    -return the following JSON object: { message: "The post with the specified ID does not exist." }.
+
+    /////// My Attempt ///////
+        posts.findById(req.params.postId)
+            if (!req.params.id) {
+                return res
+                    .status(404)
+                    .json({
+                        message: "The post with the specified ID does not exist."
+                    })
+            }
+    */
 
     posts.insertComment(comment)
 
