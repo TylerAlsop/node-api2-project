@@ -4,9 +4,12 @@ const posts = require("../data/db")
 
 const router = express.Router();
 
+module.exports = router;
 
 
-//This handles the route "GET /api/posts"
+
+
+//This handles the route "/api/posts"
 
 //////////////// GET ////////////////
 
@@ -67,7 +70,7 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
 	if (!req.body.title || !req.body.contents) {
 		return res.status(400).json({
-			message: "Missing post title or contents.",
+			errorMessage: "Please provide title and contents for the post.",
 		})
 	}
 
@@ -78,7 +81,7 @@ router.post("/", (req, res) => {
 		.catch((error) => {
 			console.log(error)
 			res.status(500).json({
-				message: "Error adding the post.",
+				error: "There was an error while saving the post to the database.",
 			})
 		})
 })
@@ -134,81 +137,6 @@ router.delete("/:id", (req, res) => {
 		})
 })
 
-//////////////// post/comments ////////////////
-//////////////// GET ////////////////
 
 
-router.get("/:id/posts", (req, res) => {
-    posts.findUserPosts(req.params.id)
-        .then((posts) => {
-            res
-                .status(200)
-                .json(posts)
-        })
-        .catch((error) => {
-            console.log(error)
-            res
-                .status(500)
-                .json({
-                    message: "Could not get user posts"
-                })
-        })
-})
 
-router.get("/:id/posts/:postId", (req, res) => {
-    posts.findUserPostById(req.params.id, req.params.postId)
-        .then((post) => {
-            if (post) {
-                res.json(post)
-            } else {
-                res
-                .status(404)
-                .json({
-                    message: "Post was not found. Make sure you have the correct post ID"
-                })
-            }
-
-        })
-        .catch((error) => {
-            console.log(error)
-            res
-                .status(500)
-                .json({
-                    message: "Could not get user post."
-                })
-        })
-})
-
-
-//////////////// POST ////////////////
-
-
-router.post("/:id/posts", (req, res) => {
-
-    if (!req.body.text) {
-        return res
-            .status(400)
-            .json({
-                message: "Text is required to create a post."
-            })
-    }
-
-    posts.addUserPost(req.params.id, req.body)
-
-    .then(post => {
-        return res.status(201).json(post)
-    })
-
-    .catch(error => {
-        console.log(error)
-        res
-            .status(500)
-            .json({
-                errorMessage: "There was an error while saving the post to the database."
-            })
-    })
-
-});
-
-
-module.exports = router;
