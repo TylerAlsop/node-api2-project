@@ -189,19 +189,29 @@ router.get("/:id/comments/:commentId", (req, res) => {
 
 router.post("/:id/comments", (req, res) => {
 
-    // posts.findUserPostById(req.params.id, req.params.postId)
-    //     .then((post) => {
-    //         if (post) {
-    //             res.json(post)
-    //         } else {
-    //             res
-    //             .status(404)
-    //             .json({
-    //                 message: "Post was not found. Make sure you have the correct post ID"
-    //             })
-    //         }
+    posts.findById(req.params.id)
+        .then((post) => {
+            if (post) {
+                res
+                    .status(200)
+                    .json(post)
+            } else {
+                res
+                    .status(404)
+                    .json({
+                        message: "The post with the specified ID does not exist."
+                    })
+            }
 
-    //     })
+        })
+        .catch (error => {
+            console.log(error)
+            res
+                .status(500)
+                .json({
+                    errorMessage: "There was an error finding the specified post."
+                })
+        })
 
 
 
@@ -217,27 +227,6 @@ router.post("/:id/comments", (req, res) => {
                 message: "Text is required to comment on a post."
             })
     }
-
-    /*
-     ////////////// CAN'T GET THIS MVP //////////////
-
-    When the client makes a POST request to /api/posts/:id/comments:
-
-    If the post with the specified id is not found:
-
-    -return HTTP status code 404 (Not Found).
-    -return the following JSON object: { message: "The post with the specified ID does not exist." }.
-
-    /////// My Attempt ///////
-        posts.findById(req.params.postId)
-            if (!req.params.id) {
-                return res
-                    .status(404)
-                    .json({
-                        message: "The post with the specified ID does not exist."
-                    })
-            }
-    */
 
     posts.insertComment(comment)
 
